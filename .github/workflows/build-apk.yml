@@ -31,6 +31,8 @@ jobs:
         run: npm run build
 
       - name: Sync Capacitor Android
+        env:
+          CAPACITOR_TELEMETRY: '0'
         run: npx cap sync android
 
       - name: Build Android APK with Gradle
