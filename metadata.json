@@ -1,0 +1,6 @@
+{
+  "name": "Poppo Live Clone - Social Live Streaming",
+  "description": "A feature-rich social live-streaming mobile web app inspired by Poppo Live & Taka Live with live rooms, gifts, coins, rankings, and admin tools.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

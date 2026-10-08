@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@keyframes floatHeart {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-120px) translateX(-15px) scale(1.1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-260px) translateX(20px) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-float-heart {
+  animation: floatHeart 1.8s ease-out forwards;
+}
+
+/* Hide scrollbars for slick mobile app look */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,237 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile for live streamer or viewer",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "publicId": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "avatar": { "type": "string" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "location": { "type": "string" },
+        "countryCode": { "type": "string" },
+        "spendingLevel": { "type": "number" },
+        "spendingXp": { "type": "number" },
+        "receivingLevel": { "type": "number" },
+        "receivingDiamonds": { "type": "number" },
+        "coins": { "type": "number" },
+        "diamonds": { "type": "number" },
+        "isStreamer": { "type": "boolean" },
+        "isBanned": { "type": "boolean" },
+        "bannedReason": { "type": "string" },
+        "isBlocked": { "type": "boolean" },
+        "onboardingCompleted": { "type": "boolean" },
+        "bio": { "type": "string" },
+        "followersCount": { "type": "number" },
+        "followingCount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "publicId", "name", "email", "coins", "diamonds"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized administrator account with role-based access control",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["super_admin", "admin", "moderator", "finance_admin", "support_admin"] },
+        "permissions": { "type": "array" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" }
+      },
+      "required": ["id", "email", "name", "role", "isActive"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable log of all administrative actions for accountability",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "adminId": { "type": "string" },
+        "adminEmail": { "type": "string" },
+        "action": { "type": "string" },
+        "targetEntity": { "type": "string" },
+        "targetId": { "type": "string" },
+        "oldValue": { "type": "string" },
+        "newValue": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "adminId", "adminEmail", "action", "timestamp"]
+    },
+    "SystemConfig": {
+      "title": "SystemConfig",
+      "description": "Dynamic configurations for wallet levels, charm levels, and coin packages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "configType": { "type": "string", "enum": ["wallet_levels", "charm_levels", "recharge_packages", "general_settings"] },
+        "data": { "type": "object" },
+        "updatedByAdminId": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "configType", "data"]
+    },
+    "WithdrawalRequest": {
+      "title": "WithdrawalRequest",
+      "description": "Diamond cashout withdrawal requests submitted by hosts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userPublicId": { "type": "string" },
+        "userName": { "type": "string" },
+        "diamondsAmount": { "type": "number" },
+        "usdEquivalent": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["bKash", "Nagad", "Bank", "Binance"] },
+        "accountDetails": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "processedByAdminId": { "type": "string" },
+        "processedAt": { "type": "string" },
+        "transactionRef": { "type": "string" },
+        "rejectionReason": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "diamondsAmount", "paymentMethod", "accountDetails", "status"]
+    },
+    "GiftItem": {
+      "title": "GiftItem",
+      "description": "Catalog of virtual gifts with coin values and animations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "coinCost": { "type": "number" },
+        "diamondYield": { "type": "number" },
+        "animationType": { "type": "string" },
+        "color": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "sortOrder": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "coinCost", "isActive"]
+    },
+    "LiveRoom": {
+      "title": "LiveRoom",
+      "description": "Active live streaming broadcast channel",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "streamerId": { "type": "string" },
+        "streamerName": { "type": "string" },
+        "streamerAvatar": { "type": "string" },
+        "streamerLevel": { "type": "number" },
+        "title": { "type": "string" },
+        "tags": { "type": "array" },
+        "coverImage": { "type": "string" },
+        "viewerCount": { "type": "number" },
+        "country": { "type": "string" },
+        "countryCode": { "type": "string" },
+        "diamondsEarned": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "isTerminatedByAdmin": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "streamerId", "streamerName", "title"]
+    },
+    "LiveMessage": {
+      "title": "LiveMessage",
+      "description": "Realtime chat message in live room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userAvatar": { "type": "string" },
+        "userLevel": { "type": "number" },
+        "text": { "type": "string" },
+        "isSystem": { "type": "boolean" },
+        "isGiftAlert": { "type": "boolean" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "userName", "text"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Safety report submitted by viewer",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "reportedUserId": { "type": "string" },
+        "reportedUserName": { "type": "string" },
+        "reportedByUserId": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "investigating", "resolved", "dismissed"] },
+        "resolvedByAdminId": { "type": "string" },
+        "resolutionAction": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "reportedUserId", "reason"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "System broadcast notification to users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "targetAudience": { "type": "string", "enum": ["all", "streamers", "vip"] },
+        "createdByAdminId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "message", "targetAudience"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Authorized admin accounts with RBAC roles"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Administrative audit trail logs"
+    },
+    "/system_configs/{configId}": {
+      "schema": "SystemConfig",
+      "description": "Global level formulas, packages, and system configurations"
+    },
+    "/withdrawals/{withdrawalId}": {
+      "schema": "WithdrawalRequest",
+      "description": "Cashout withdrawal requests queue"
+    },
+    "/gifts/{giftId}": {
+      "schema": "GiftItem",
+      "description": "Global virtual gift catalog"
+    },
+    "/rooms/{roomId}": {
+      "schema": "LiveRoom",
+      "description": "Collection of active broadcast rooms"
+    },
+    "/rooms/{roomId}/messages/{messageId}": {
+      "schema": "LiveMessage",
+      "description": "Live chat messages stream"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Safety reports collection"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Broadcast notifications push queue"
+    }
+  }
+}

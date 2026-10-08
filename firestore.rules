@@ -1,0 +1,109 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for Role-Based Access Control (RBAC)
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwnerEmail() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'najmulmd65679@gmail.com'
+      );
+    }
+
+    function isAdmin() {
+      return isOwnerEmail() || (
+        isAuthenticated() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true
+      );
+    }
+
+    function isSuperAdmin() {
+      return isOwnerEmail() || (
+        isAdmin() &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin'
+      );
+    }
+
+    function isFinanceAdmin() {
+      return isOwnerEmail() || (
+        isAdmin() && (
+          get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'finance_admin' ||
+          get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin' ||
+          get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin'
+        )
+      );
+    }
+
+    // 1. Admin Accounts:
+    // Any authenticated user can read their own admin doc to check status.
+    // The project owner or super admin can create or update admin docs.
+    match /admins/{adminId} {
+      allow read: if isAuthenticated() && (request.auth.uid == adminId || isAdmin());
+      allow create, update: if isAuthenticated() && (isSuperAdmin() || request.auth.uid == adminId || isOwnerEmail());
+      allow delete: if isSuperAdmin();
+    }
+
+    // 2. Audit Logs: Immutable log trail
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // 3. System Configurations (Wallet Levels, Charm Levels, Packages)
+    match /system_configs/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 4. Virtual Gifts Catalog
+    match /gifts/{giftId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5. Withdrawal Requests (Cashout queue)
+    match /withdrawals/{withdrawalId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isFinanceAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // 6. Users Collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isSuperAdmin();
+    }
+
+    // 7. Live Rooms & Realtime Chat
+    match /rooms/{roomId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin() || true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // 8. Safety Reports
+    match /reports/{reportId} {
+      allow create: if true;
+      allow read, update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // 9. System Announcements
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
