@@ -23,9 +23,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+          cache: 'gradle'
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
@@ -33,11 +31,8 @@ jobs:
       - name: Build Web App
         run: npm run build
 
-      - name: Add Capacitor Android Platform
-        run: |
-          npm install --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/android
-          npx cap add android || true
-          npx cap sync android
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Build Android APK with Gradle
         working-directory: android
