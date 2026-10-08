@@ -1,0 +1,6 @@
+{
+  "appId": "com.kothalive.app",
+  "appName": "Kotha Live",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
